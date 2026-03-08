@@ -1,6 +1,7 @@
 class Measurement:
     """
-    This class represents a measurement taken from a sensor.
+    Denne klassen representerer en måling tatt av en sensor (inneholder når målingen ble tatt, verdien og enheten). 
+    En måling kan for eksempel være en temperaturmåling som ble tatt 2024-06-01 kl. 12:00, med verdien 21.5 og enheten "°C".
     """
 
     def __init__(self, timestamp, value, unit):
@@ -10,10 +11,10 @@ class Measurement:
 
 
 
-# Ferdig floor class
+
 class Floor:
     """
-    This class represents a floor in the house.
+    Denne klassen representerer et gulv i huset (inneholder gulvets nivå og hvilke rom som er registrert på det).
     """
     def __init__(self, level):
         self.level = level
@@ -30,11 +31,11 @@ class Floor:
 
 class Room:
     """
-    This class represents a room in the house.
+    Denne klassen representerer et rom i huset (inneholder rommets areal, navn og hvilke enheter som er registrert i det).
     """
-    def __init__(self, area, name):
+    def __init__(self, area, room_name):
         self.area = area
-        self.name = name
+        self.room_name = room_name
         self.devices = []
 
     def add_device(self, device):
@@ -45,13 +46,14 @@ class Room:
 
 class Device:
     """
-    This class represents a smart device in the house.
+    Denne klassen representerer en smart enhet i huset, og fungerer som en superklasse for både sensorer og aktuatorer.
     """
     def __init__(self, id, supplier, model_name, device_type):
         self.id = id
         self.supplier = supplier
         self.model_name = model_name
         self.device_type = device_type
+        self.room = None
 
     def is_sensor(self):
         return False
@@ -70,29 +72,50 @@ class Device:
 
 
 
-class Sensor(Device):
+class Sensor(Device):                                           
     """
-    This class represents a sensor device in the house.
+    Denne klassen representerer en sensor-enhet i huset, arver fra Device-klassen
     """
-    def __init__(self, id, device_type, supplier, model_name):
-        super().__init__(id, supplier, model_name, device_type)
-        self.measurements = []
+    def __init__(self, id, device_type, supplier, model_name):  # Konstruktøren
+        super().__init__(id, supplier, model_name, device_type) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
+        self.measurements = []                                  # Tom liste for å lagre målinger som er tatt av sensoren
 
-    def add_measurement(self, measurement):
-        self.measurements.append(measurement)
+    def add_measurement(self, measurement):                     # Metode for å legge til en måling i sensoren
+        self.measurements.append(measurement)                   # Legger til målingen i listen
+
+    def is_sensor(self):                                        # Metode for å sjekke om enheten er en sensor
+        return True
+
+    def last_measurement(self):                         # Metode for å hente siste måling fra sensoren
+        if self.measurements:                           # Sjekker om det finnes noen målinger i listen
+            return self.measurements[-1]                # Returnerer siste måling fra listen
+        return None                                     # Returnerer None hvis det ikke finnes noen målinger
 
 
 
 
 class Actuator(Device):
     """
-    This class represents an actuator device in the house.
+    Denne klassen representerer en aktuator-enhet i huset, arver fra Device-klassen
     """
-    def __init__(self, id, device_type, supplier, model_name):
-        super().__init__(id, supplier, model_name, device_type)
+    def __init__(self, id, device_type, supplier, model_name):  # Konstruktøren
+        super().__init__(id, supplier, model_name, device_type) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
+        self.state = False                  # Aktuatoren starter i av-tilstand (False)
+        self.target_value = None            # Aktuatoren har ingen målverdi ved oppstart
 
-    def set_state(self, state):
-        self.state = state
+    def is_actuator(self):                  # Metode for å sjekke om enheten er en aktuator
+        return True                         
+
+    def turn_on(self, value=None):          # Metode for å slå på aktuatoren, med mulighet for å spesifisere en målverdi
+        self.state = True                   # Skrur på aktuatoren
+        if value is not None:               # Hvis en målverdi er spesifisert,
+            self.target_value = value       # Lagre målverdien i target_value-attributtet
+
+    def turn_off(self):                     # Metode for å slå av aktuatoren
+        self.state = False                  # Skrur av aktuatoren
+
+    def is_active(self):                    # Metode for å sjekke om aktuatoren er aktiv (på)
+        return self.state                   # Returnerer True hvis aktuatoren er på, ellers False
         
 
 
