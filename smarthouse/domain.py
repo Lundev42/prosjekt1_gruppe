@@ -6,10 +6,10 @@ class Measurement:
     En måling kan for eksempel være en temperaturmåling som ble tatt 2024-06-01 kl. 12:00, med verdien 21.5 og enheten "°C".
     """
 
-    def __init__(self, timestamp, value, unit):
-        self.timestamp = timestamp
-        self.value = value
-        self.unit = unit
+    def __init__(self, timestamp, value, unit):                 # Konstruktøren (tar inn tidspunkt og dato for målingen, verdien og enheten)
+        self.timestamp = timestamp                              # Tidspunkt og dato (f.eks. "2024-06-01 12:00")
+        self.value = value                                      # Måleverdien (f.eks. 21.5)
+        self.unit = unit                                        # Enheten for måleverdien (f.eks. "°C")
 
 
 
@@ -18,15 +18,15 @@ class Floor:
     """
     Denne klassen representerer et gulv i huset (inneholder gulvets nivå og hvilke rom som er registrert på det).
     """
-    def __init__(self, level):
-        self.level = level
-        self.rooms = []
+    def __init__(self, level):                                  # Konstruktøren (tar inn etasje, f.eks. 0 for kjeller, 1 for første etasje)
+        self.level = level                                      # Etasjenivå 
+        self.rooms = []                                         # Liste over rom som er registrert på denne etasjen
 
-    def add_room(self, room):
-        self.rooms.append(room)
+    def add_room(self, room):                                   # Metode for å legge til et rom på etasjen
+        self.rooms.append(room)                                 # Legger til rommet i listen i konstruktøren
 
-    def get_area(self):
-        return sum(room.area for room in self.rooms)
+    def get_area(self):                                         # Metoden beregner total areal for etasjen ved å summere arealet til hvert rom på etasjen   
+        return sum(room.area for room in self.rooms)            # Returnerer total areal for etasjen, som er summen av arealet til hvert rom i listen self.rooms
 
 
 
@@ -35,13 +35,13 @@ class Room:
     """
     Denne klassen representerer et rom i huset (inneholder rommets areal, navn og hvilke enheter som er registrert i det).
     """
-    def __init__(self, area, room_name):
-        self.area = area
-        self.room_name = room_name
-        self.devices = []
+    def __init__(self, area, room_name):                        # Konstruktøren (tar inn areal og romnavn)
+        self.area = area                                        # Areal i kvadratmeter  
+        self.room_name = room_name                              # Navn på rommet ("Stue", "Kjøkken", etc.)
+        self.devices = []                                       # Liste over enheter (devices) som er i rommet
 
-    def add_device(self, device):
-        self.devices.append(device)
+    def add_device(self, device):                               # Metode for å legge til en enhet i rommet
+        self.devices.append(device)                             # Legger til enheten i listen i konstruktøren
 
 
 
@@ -50,7 +50,7 @@ class Device:
     """
     Denne klassen representerer en smart enhet i huset, og fungerer som en superklasse for både sensorer og aktuatorer.
     """
-    def __init__(self, id, supplier, model_name, device_type):  # Konstruktøren
+    def __init__(self, id, supplier, model_name, device_type):  # Konstruktøren (tar inn id, leverandør, modellnavn og type enhet)
         self.id = id                                            # Unik identifikator for enheten
         self.supplier = supplier                                # Leverandør av enheten
         self.model_name = model_name                            # Modellnavn for enheten    
