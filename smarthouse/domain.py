@@ -10,57 +10,90 @@ class Measurement:
 
 
 
-# TODO: Add your own classes here!
 
 class Floor:
     """
     This class represents a floor in the house.
     """
-
     def __init__(self, level):
         self.level = level
         self.rooms = []
+
+    def add_room(self, room):
+        self.rooms.append(room)
+
+    def get_area(self):
+        return sum(room.area for room in self.rooms)
+
+
 
 
 class Room:
     """
     This class represents a room in the house.
     """
-
-    def __init__(self, size, name=None):
-        self.size = size
+    def __init__(self, area, name):
+        self.area = area
         self.name = name
         self.devices = []
+
+    def add_device(self, device):
+        self.devices.append(device)
+
+
 
 
 class Device:
     """
     This class represents a smart device in the house.
     """
-
-    def __init__(self, device_id, device_type):
-        self.device_id = device_id
+    def __init__(self, id, supplier, model_name, device_type):
+        self.id = id
+        self.supplier = supplier
+        self.model_name = model_name
         self.device_type = device_type
-        self.state = None
+
+    def is_sensor(self):
+        return False
+
+    def is_actuator(self):
+        return False
+
+    def get_info(self):
+        return {
+            "id": self.id,
+            "device_type": self.device_type,
+            "supplier": self.supplier,
+            "model_name": self.model_name,
+        }
+
+
 
 
 class Sensor(Device):
     """
     This class represents a sensor device in the house.
     """
-
-    def __init__(self, device_id, device_type):
-        super().__init__(device_id, device_type)
+    def __init__(self, id, device_type, supplier, model_name):
+        super().__init__(id, supplier, model_name, device_type)
         self.measurements = []
+
+    def add_measurement(self, measurement):
+        self.measurements.append(measurement)
+
+
 
 
 class Actuator(Device):
     """
     This class represents an actuator device in the house.
     """
+    def __init__(self, id, device_type, supplier, model_name):
+        super().__init__(id, supplier, model_name, device_type)
 
-    def __init__(self, device_id, device_type):
-        super().__init__(device_id, device_type)
+    def set_state(self, state):
+        self.state = state
+        
 
 
 
