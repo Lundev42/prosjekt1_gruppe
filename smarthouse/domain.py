@@ -10,7 +10,7 @@ class Measurement:
 
 
 
-
+# Ferdig floor class
 class Floor:
     """
     This class represents a floor in the house.
