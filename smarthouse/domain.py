@@ -12,6 +12,58 @@ class Measurement:
 
 # TODO: Add your own classes here!
 
+class Floor:
+    """
+    This class represents a floor in the house.
+    """
+
+    def __init__(self, level):
+        self.level = level
+        self.rooms = []
+
+
+class Room:
+    """
+    This class represents a room in the house.
+    """
+
+    def __init__(self, size, name=None):
+        self.size = size
+        self.name = name
+        self.devices = []
+
+
+class Device:
+    """
+    This class represents a smart device in the house.
+    """
+
+    def __init__(self, device_id, device_type):
+        self.device_id = device_id
+        self.device_type = device_type
+        self.state = None
+
+
+class Sensor(Device):
+    """
+    This class represents a sensor device in the house.
+    """
+
+    def __init__(self, device_id, device_type):
+        super().__init__(device_id, device_type)
+        self.measurements = []
+
+
+class Actuator(Device):
+    """
+    This class represents an actuator device in the house.
+    """
+
+    def __init__(self, device_id, device_type):
+        super().__init__(device_id, device_type)
+
+
+
 
 class SmartHouse:
     """
