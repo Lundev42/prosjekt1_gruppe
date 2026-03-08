@@ -1,3 +1,5 @@
+
+
 class Measurement:
     """
     Denne klassen representerer en måling tatt av en sensor (inneholder når målingen ble tatt, verdien og enheten). 
@@ -86,10 +88,10 @@ class Sensor(Device):
     def is_sensor(self):                                        # Metode for å sjekke om enheten er en sensor
         return True
 
-    def last_measurement(self):                         # Metode for å hente siste måling fra sensoren
-        if self.measurements:                           # Sjekker om det finnes noen målinger i listen
-            return self.measurements[-1]                # Returnerer siste måling fra listen
-        return None                                     # Returnerer None hvis det ikke finnes noen målinger
+    def last_measurement(self):                                 # Metode for å hente siste måling fra sensoren
+        if self.measurements:                                   # Sjekker om det finnes noen målinger i listen
+            return self.measurements[-1]                        # Returnerer siste måling fra listen
+        return None                                             # Returnerer None hvis det ikke finnes noen målinger
 
 
 
@@ -100,22 +102,22 @@ class Actuator(Device):
     """
     def __init__(self, id, device_type, supplier, model_name):  # Konstruktøren
         super().__init__(id, supplier, model_name, device_type) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
-        self.state = False                  # Aktuatoren starter i av-tilstand (False)
-        self.target_value = None            # Aktuatoren har ingen målverdi ved oppstart
+        self.state = False                                      # Aktuatoren starter i av-tilstand (False)
+        self.target_value = None                                # Aktuatoren har ingen målverdi ved oppstart
 
-    def is_actuator(self):                  # Metode for å sjekke om enheten er en aktuator
+    def is_actuator(self):                                      # Metode for å sjekke om enheten er en aktuator
         return True                         
 
-    def turn_on(self, value=None):          # Metode for å slå på aktuatoren, med mulighet for å spesifisere en målverdi
-        self.state = True                   # Skrur på aktuatoren
-        if value is not None:               # Hvis en målverdi er spesifisert,
-            self.target_value = value       # Lagre målverdien i target_value-attributtet
+    def turn_on(self, value=None):                              # Metode for å slå på aktuatoren, med mulighet for å spesifisere en målverdi
+        self.state = True                                       # Skrur på aktuatoren
+        if value is not None:                                   # Hvis en målverdi er spesifisert,
+            self.target_value = value                           # Lagre målverdien i target_value-attributtet
 
-    def turn_off(self):                     # Metode for å slå av aktuatoren
-        self.state = False                  # Skrur av aktuatoren
+    def turn_off(self):                                         # Metode for å slå av aktuatoren
+        self.state = False                                      # Skrur av aktuatoren
 
-    def is_active(self):                    # Metode for å sjekke om aktuatoren er aktiv (på)
-        return self.state                   # Returnerer True hvis aktuatoren er på, ellers False
+    def is_active(self):                                        # Metode for å sjekke om aktuatoren er aktiv (på)
+        return self.state                                       # Returnerer True hvis aktuatoren er på, ellers False
         
 
 
