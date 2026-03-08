@@ -50,26 +50,18 @@ class Device:
     """
     Denne klassen representerer en smart enhet i huset, og fungerer som en superklasse for både sensorer og aktuatorer.
     """
-    def __init__(self, id, supplier, model_name, device_type):
-        self.id = id
-        self.supplier = supplier
-        self.model_name = model_name
-        self.device_type = device_type
-        self.room = None
+    def __init__(self, id, supplier, model_name, device_type):  # Konstruktøren
+        self.id = id                                            # Unik identifikator for enheten
+        self.supplier = supplier                                # Leverandør av enheten
+        self.model_name = model_name                            # Modellnavn for enheten    
+        self.device_type = device_type                          # Type enhet ("temperatursensor", "lysbryter", etc.)
+        self.room = None                                        # Rommet enheten er registrert i (utgangspunkt: None)
 
-    def is_sensor(self):
+    def is_sensor(self):                                        # Enheten er ikke en sensor
         return False
 
-    def is_actuator(self):
+    def is_actuator(self):                                      # Enheten er ikke en aktuator     
         return False
-
-    def get_info(self):
-        return {
-            "id": self.id,
-            "device_type": self.device_type,
-            "supplier": self.supplier,
-            "model_name": self.model_name,
-        }
 
 
 
