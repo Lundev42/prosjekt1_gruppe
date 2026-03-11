@@ -110,12 +110,19 @@ class Actuator(Device):
 
     def is_active(self):                                        # Metode for å sjekke om aktuatoren er aktiv (på)
         return self.state                                       # Returnerer True hvis aktuatoren er på, ellers False
-        
+
+    def change_target_value(self, new_value):                   # Metode for å endre verdi til en påskrudd actuator
+        if self.state:
+            self.target_value = new_value
+
+
 
 
 
 
 class SmartHouse:
+    def __init__ (self):
+        self.floors = []                                     # Liste med etasjer
     """
     This class serves as the main entity and entry point for the SmartHouse system app.
     Do not delete this class nor its predefined methods since other parts of the
@@ -126,12 +133,18 @@ class SmartHouse:
     """
 
     def register_floor(self, level):
+        if level in self.floors:                            # Legger til en ny etasje på huset dersom etasjen ikke
+            self.floors.add(level)                          # allerede er lagt til
+        return level
         """
         This method registers a new floor at the given level in the house
         and returns the respective floor object.
         """
 
     def register_room(self, floor, room_size, room_name = None):
+        new_room = Room(room_size, room_name)
+        if floor in self.floors:
+            self.floors[floor.level].add(new_room)
         """
         This methods registers a new room with the given room areal size 
         at the given floor. Optionally the room may be assigned a mnemonic name.
