@@ -1,66 +1,68 @@
+from smarthouse.domain import SmartHouse, Device, Actuator, Sensor, Measurement 
 from datetime import date
 
-from smarthouse.domain import Actuator, Device, Sensor, SmartHouse, Measurement
 
 DEMO_HOUSE = SmartHouse()
 
 # Building house structure
-#ground_floor = DEMO_HOUSE.register_floor(1)
-#entrance = DEMO_HOUSE.register_room(ground_floor, 13.5, "Entrance")
-# TODO: continue registering the remaining floor, rooms and devices
 
-# Floors
+# FLOORS
 ground_floor = DEMO_HOUSE.register_floor(1)
 second_floor = DEMO_HOUSE.register_floor(2)
 
-# Ground floor rooms
+# ROOMS ON GROUND FLOOR
 entrance = DEMO_HOUSE.register_room(ground_floor, 13.5, "Entrance")
-bathroom = DEMO_HOUSE.register_room(ground_floor, 15.0, "Bathroom")
-storage = DEMO_HOUSE.register_room(ground_floor, 8.0, "Storage")
-laundry = DEMO_HOUSE.register_room(ground_floor, 9.0, "Laundry")
-office = DEMO_HOUSE.register_room(ground_floor, 10.0, "Office")
-guest_room = DEMO_HOUSE.register_room(ground_floor, 12.0, "Guest Room")
+livingRoom_kitchen = DEMO_HOUSE.register_room(ground_floor, 39.75, "Living Room/Kitchen")
+bathroom1 = DEMO_HOUSE.register_room(ground_floor, 6.3, "Bathroom 1")
+guestRoom1 = DEMO_HOUSE.register_room(ground_floor, 8, "Guest Room 1")
+garage = DEMO_HOUSE.register_room(ground_floor, 19, "Garage")
 
-#second floor rooms
-living_room = DEMO_HOUSE.register_room(second_floor, 35.0, "Living Room")
-kitchen = DEMO_HOUSE.register_room(second_floor, 25.0, "Kitchen")
-bedroom1 = DEMO_HOUSE.register_room(second_floor, 10.0, "Bedroom 1")
-bedroom2 = DEMO_HOUSE.register_room(second_floor, 7.0, "Bedroom 2")
-dresser = DEMO_HOUSE.register_room(second_floor, 6.0, "Dressing Room") 
-hallway = DEMO_HOUSE.register_room(second_floor, 6.05, "Hallway")
+# DEVICES ON GROUND FLOOR
+smart_lock = Actuator("4d5f1ac6-906a-4fd1-b4bf-3a0671e4c4f1", "Smart Lock", "MythicalTech", "Guardian Lock 7000")
+electricity_meter = Sensor("a2f8690f-2b3a-43cd-90b8-9deea98b42a7", "Electricity Meter", "MysticEnergy Innovations", "Volt Watch Elite") 
+motion_sensor = Sensor("cd5be4e8-0e6b-4cb5-a21f-819d06cf5fc5","Motion Sensor","NebulaGuard Innovations","MoveZ Detect 69")
+heat_pump = Actuator("5e13cabc-5c58-4bb3-82a2-3039e4480a6d", "Heat Pump", "ElysianTech", "Thermo Smart 6000")
+co2_sensor = Sensor("8a43b2d7-e8d3-4f3d-b832-7dbf37bf629e", "CO2 sensor", "ElysianTech", "Smoke Warden 1000")
+humidity_sensor = Sensor("3d87e5c0-8716-4b0b-9c67-087eaaed7b45", "Humidity Sensor", "AetherCorp", "Aqua Alert 800")
+smart_oven = Actuator("8d4e4c98-21a9-4d1e-bf18-523285ad90f6", "Smart Oven", "AetherCorp", "Pheonix HEAT 333")
+automatic_garage_door = Actuator("9a54c1ec-0cb5-45a7-b20d-2a7349f1b132", "Automatic Garage Door", "MythicalTech", "Guardian Lock 9000")
 
-# Devices
-lightbulb = Actuator("6b1c5f6b-37f6-4e3d-9145-1cfbe2f1fc28", "Light Bulp", "Elysian Tech", "Lumina Glow 4000")
-heatpump= Actuator("5e13cabc-5c58-4bb3-82a2-3039e4480a6d","Heat Pump","Nordic Climate Systems","FrostFlow X")
-motion_sesnsor = Sensor("cd5be4e8-0e6b-4cb5-a21f-819d06cf5fc5","Motion Sensor","NebulaGuard Innovations","MoveZ Detect 69")
-temperature_sensor = Sensor("4d8b1d62-7921-4917-9b70-bbd31f6e2e8e","Temperature Sensor","ArcticSense","ThermoTrack Mini")
+# REGISTERING DEVICES GROUND FLOOR
+DEMO_HOUSE.register_device(entrance, smart_lock)
+DEMO_HOUSE.register_device(entrance, electricity_meter)
+DEMO_HOUSE.register_device(livingRoom_kitchen, motion_sensor)
+DEMO_HOUSE.register_device(livingRoom_kitchen, heat_pump)
+DEMO_HOUSE.register_device(livingRoom_kitchen, co2_sensor)
+DEMO_HOUSE.register_device(bathroom1, humidity_sensor)
+DEMO_HOUSE.register_device(guestRoom1, smart_oven)
+DEMO_HOUSE.register_device(garage, automatic_garage_door)
 
-lightbulb1 = Actuator("66d2656c-9cf3-4180-9037-5da68d98fbfb", "Light Bulp1", "Elysian Tech", "Lumina Glow 4000")
-lightbulb2 = Actuator("fe49598c-83b9-4460-9961-890acae53113", "Light Bulp2", "Elysian Tech", "Lumina Glow 4000")
-heatpump1= Actuator("9eb2e230-2c41-4954-8ea5-661b73ae7082","Heat Pump1","Nordic Climate Systems","FrostFlow X")
-heatpump2= Actuator("6d1bfcda-ea92-405a-b376-a53c984b357f","Heat Pump2","Nordic Climate Systems","FrostFlow X")
-motion_sesnsor1 = Sensor("587462a3-91bf-44bf-b69e-89366308feea","Motion Sensor1","NebulaGuard Innovations","MoveZ Detect 69")
-temperature_sensor1 = Sensor("f175d858-b6f1-4079-a810-1387473206f2","Temperature Sensor1","ArcticSense","ThermoTrack Mini")
-heatpump3= Actuator("acc01b98-2c1d-48a4-89f2-107c102221df","Heat Pump3","Nordic Climate Systems","FrostFlow X")
-lightbulb3= Actuator("6af8343d-bb6b-471f-be5a-659fc781ce4c","Light Bulp3","Elysian Tech","Lumina Glow 4000")
-motion_sesnsor3 = Sensor("cfd3f745-0ad3-4177-b359-3bdbefc56fd5","Motion Sensor3","NebulaGuard Innovations","MoveZ Detect 69")
-temperature_sensor3 = Sensor("b3eaa51f-0542-489a-b0eb-5364ff6ed91e","Temperature Sensor3","ArcticSense","ThermoTrack Mini")
 
+# ROOMS ON SECOND FLOOR
+office = DEMO_HOUSE.register_room(second_floor, 11.75, "Office")
+bathroom2 = DEMO_HOUSE.register_room(second_floor, 9.25, "Bathroom 2")
+guestRoom2 = DEMO_HOUSE.register_room(second_floor, 8, "Guest Room 2")
+hallway = DEMO_HOUSE.register_room(second_floor, 10, "Hallway")
+guestRoom3 = DEMO_HOUSE.register_room(second_floor, 10, "Guest Room 3")
+dressingRoom = DEMO_HOUSE.register_room(second_floor, 4, "Dressing Room")
+masterBedroom = DEMO_HOUSE.register_room(second_floor, 17, "Master Bedroom")
+
+# DEVICES ON SECOND FLOOR
+smart_plug = Actuator("1a66c3d6-22b2-446e-bf5c-eb5b9d1a8c79", "Smart Plug", "MysticEnergy Innovations", "FlowState X")
+dehumidifier = Actuator("9e5b8274-4e77-4e4e-80d2-b40d648ea02a", "Dehumidifier", "ArcaneTech Solutions", "Hydra Dry 8000")
+lightbulp = Actuator("6b1c5f6b-37f6-4e3d-9145-1cfbe2f1fc28", "Light Bulp", "Elysian Tech", "Lumina Glow 4000")
+air_quality_sensor = Sensor("7c6e35e1-2d8b-4d81-a586-5d01a03bb02c", "Air Quality Sensor", "CelestialSense Technologies", "AeroGuard Pro")
+temperature_sensor = Sensor("4d8b1d62-7921-4917-9b70-bbd31f6e2e8e", "Temperature Sensor", "AetherCorp", "SmartTemp 42")
+smart_oven = Actuator("c1e8fa9c-4b8d-487a-a1a5-2b148ee9d2d1", "Smart Oven", "IgnisTech Solutions", "Ember Heat 3000")
+
+# REGISTERING DEVICES SECOND FLOOR
+DEMO_HOUSE.register_device(office, smart_plug)
+DEMO_HOUSE.register_device(bathroom2, dehumidifier)
+DEMO_HOUSE.register_device(guestRoom2, lightbulp)
+DEMO_HOUSE.register_device(guestRoom3, air_quality_sensor)
+DEMO_HOUSE.register_device(masterBedroom, temperature_sensor)
+DEMO_HOUSE.register_device(masterBedroom, smart_oven)
+
+# ADDING MEASUREMENT TO TEMPERATURE SENSOR
 measurement = Measurement(date.today(), value=22.5, unit="°C")
 temperature_sensor.add_measurement(measurement)
-
-DEMO_HOUSE.register_device(living_room, temperature_sensor)  
-DEMO_HOUSE.register_device(living_room, motion_sesnsor) 
-DEMO_HOUSE.register_device(hallway,lightbulb) 
-DEMO_HOUSE.register_device(bedroom1, heatpump1)
-DEMO_HOUSE.register_device(bedroom2, lightbulb1)
-DEMO_HOUSE.register_device(bedroom2, heatpump2)
-DEMO_HOUSE.register_device(office, motion_sesnsor1)
-DEMO_HOUSE.register_device(office, temperature_sensor1)
-DEMO_HOUSE.register_device(living_room, lightbulb2)
-DEMO_HOUSE.register_device(kitchen, heatpump3)
-DEMO_HOUSE.register_device(guest_room, motion_sesnsor3)
-DEMO_HOUSE.register_device(guest_room, temperature_sensor3)
-DEMO_HOUSE.register_device(kitchen, lightbulb3)
-
-DEMO_HOUSE.register_device(kitchen, heatpump)  

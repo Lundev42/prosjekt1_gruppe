@@ -27,7 +27,8 @@ class Floor:
 
     def get_area(self):                                         # Metoden beregner total areal for etasjen ved å summere arealet til hvert rom på etasjen   
         return sum(room.area for room in self.rooms)            # Returnerer total areal for etasjen, som er summen av arealet til hvert rom i listen self.rooms
-
+    
+    
 
 
 
@@ -42,7 +43,6 @@ class Room:
 
     def add_device(self, device):                               # Metode for å legge til en enhet i rommet
         self.devices.append(device)                             # Legger til enheten i listen i konstruktøren
-
 
 
 
@@ -62,8 +62,6 @@ class Device:
 
     def is_actuator(self):                                      # Enheten er ikke en aktuator     
         return False
-
-
 
 
 class Sensor(Device):                                           
