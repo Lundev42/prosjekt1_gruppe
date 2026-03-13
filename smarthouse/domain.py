@@ -63,6 +63,9 @@ class Device:
     def is_actuator(self):                                      # Enheten er ikke en aktuator     
         return False
 
+    def get_device_type(self):                                  # Metode for å hente enhetens type
+        return self.device_type                                 # Returnerer enhetens type
+
 
 class Sensor(Device):                                           
     """
