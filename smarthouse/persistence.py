@@ -1,6 +1,8 @@
 import sqlite3
+
 from typing import Optional
-from smarthouse.domain import Measurement
+from smarthouse.domain import Measurement, Room, Sensor, Actuator, SmartHouse, Floor
+
 
 class SmartHouseRepository:
     """
@@ -38,7 +40,33 @@ class SmartHouseRepository:
         """
         # TODO: START here! remove the following stub implementation and implement this function 
         #       by retrieving the data from the database via SQL `SELECT` statements.
-        return NotImplemented
+        
+        
+
+        cur = self.cursor()                                         #Henter connection til databasen
+        cur.execute("""                     
+            SELECT *
+            FROM devices d INNER JOIN rooms r ON d.room=r.id;
+        """)                                                      # execute SQL-spørring som slår sammen rom og devices fra databasen på rom-ID (inner join)
+
+        rooms_data = cur.fetchall()                                # Henter data fra connection
+        h=SmartHouse()                                              # Oppretter et smarthouse for å fylle inn data
+
+        
+        for row in rooms_data:
+            new_room = h.register_room(row[7],row[8],row[9])        #oppretter et nytt rom som oppretter etasjer automatisk            
+            new_device = None                                          #Tom variabel for ny device
+
+            if row[3] == 'actuator':                                #sjekker type device, vet at det bare er actuator eller sensor
+                new_device = Actuator(row[0], row[2], row[4], row[5])   #Opprette actuator med data fra databasen
+            else:
+                new_device = Sensor(row[0], row[2], row[4], row[5])     #Opprette sensor med data fra databasen
+
+            h.register_device(new_room, new_device)                     #Registrerer device på rommet 
+
+        cur.close()                                                     #Lukker connection til databasen
+
+        return h                                                        #returnerer smarthouse, h
 
 
     def get_latest_reading(self, sensor) -> Optional[Measurement]:
