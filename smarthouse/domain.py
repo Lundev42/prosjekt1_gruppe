@@ -42,7 +42,8 @@ class Room:
         self.devices = []                                       # Liste over enheter (devices) som er i rommet
 
     def add_device(self, device):                               # Metode for å legge til en enhet i rommet
-        self.devices.append(device)                             # Legger til enheten i listen i konstruktøren
+        if device not in self.devices:
+            self.devices.append(device)                             # Legger til enheten i listen i konstruktøren
 
 
 
@@ -50,11 +51,11 @@ class Device:
     """
     Denne klassen representerer en smart enhet i huset, og fungerer som en superklasse for både sensorer og aktuatorer.
     """
-    def __init__(self, id, supplier, model_name, device_type):  # Konstruktøren (tar inn id, leverandør, modellnavn og type enhet)
+    def __init__(self, id, supplier, model_name, device_name):  # Konstruktøren (tar inn id, leverandør, modellnavn og type enhet)
         self.id = id                                            # Unik identifikator for enheten
         self.supplier = supplier                                # Leverandør av enheten
         self.model_name = model_name                            # Modellnavn for enheten    
-        self.device_type = device_type                          # Type enhet ("temperatursensor", "lysbryter", etc.)
+        self.device_name = device_name                          # Type enhet ("temperatursensor", "lysbryter", etc.)
         self.room = None                                        # Rommet enheten er registrert i (utgangspunkt: None)
 
     def is_sensor(self):                                        # Enheten er ikke en sensor
@@ -64,15 +65,15 @@ class Device:
         return False
 
     def get_device_type(self):                                  # Metode for å hente enhetens type
-        return self.device_type                                 # Returnerer enhetens type
+        return self.device_name                                 # Returnerer enhetens type
 
 
 class Sensor(Device):                                           
     """
     Denne klassen representerer en sensor-enhet i huset, arver fra Device-klassen
     """
-    def __init__(self, id, device_type, supplier, model_name):  # Konstruktøren
-        super().__init__(id, supplier, model_name, device_type) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
+    def __init__(self, id, device_name, supplier, model_name):  # Konstruktøren
+        super().__init__(id, supplier, model_name, device_name) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
         self.measurements = []                                  # Tom liste for å lagre målinger som er tatt av sensoren
 
     def add_measurement(self, measurement):                     # Metode for å legge til en måling i sensoren
@@ -93,8 +94,8 @@ class Actuator(Device):
     """
     Denne klassen representerer en aktuator-enhet i huset, arver fra Device-klassen
     """
-    def __init__(self, id, device_type, supplier, model_name):  # Konstruktøren
-        super().__init__(id, supplier, model_name, device_type) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
+    def __init__(self, id, device_name, supplier, model_name):  # Konstruktøren
+        super().__init__(id, supplier, model_name, device_name) # Kaller konstruktøren til Device-klassen for å initialisere felles attributter
         self.state = False                                      # Aktuatoren starter i av-tilstand (False)
         self.target_value = None                                # Aktuatoren har ingen målverdi ved oppstart
 
@@ -123,17 +124,22 @@ class Actuator(Device):
 
 class SmartHouse:
     def __init__ (self):
-        self.floors = []                                     # Liste med etasjer
-    """
-    This class serves as the main entity and entry point for the SmartHouse system app.
-    Do not delete this class nor its predefined methods since other parts of the
-    application may depend on it (you are free to add as many new methods as you like, though).
+        """
+        This class serves as the main entity and entry point for the SmartHouse system app.
+        Do not delete this class nor its predefined methods since other parts of the
+        application may depend on it (you are free to add as many new methods as you like, though).
 
-    The SmartHouse class provides functionality to register rooms and floors (i.e. changing the 
-    house's physical layout) as well as register and modify smart devices and their state.
-    """
+        The SmartHouse class provides functionality to register rooms and floors (i.e. changing the 
+        house's physical layout) as well as register and modify smart devices and their state.
+        """
+        self.floors = []                                     # Liste med etasjer
+    
 
     def register_floor(self, level):
+        """
+        This method registers a new floor at the given level in the house
+        and returns the respective floor object.
+        """
         for floor in self.floors:                           #Sjekker om etasjen allerede eksisterer i huset
             if floor.level == level:
                 return floor
@@ -143,12 +149,13 @@ class SmartHouse:
 
         return new_floor                                    #Returnerer den nye etasjen som beskrevet i oppgaven
 
-        """
-        This method registers a new floor at the given level in the house
-        and returns the respective floor object.
-        """
+    
 
     def register_room(self, floor, room_size, room_name = None):
+        """
+        This methods registers a new room with the given room areal size 
+        at the given floor. Optionally the room may be assigned a mnemonic name.
+        """
         new_room = Room(room_size, room_name)               #Lager et nytt rom med gitte navn og areal
 
         if floor in self.floors:                            #Sjekker om etasjen til rommet eksisterer og legger det til
@@ -157,69 +164,78 @@ class SmartHouse:
             self.register_floor(floor).add_room(new_room)   #Hvis etasjen ikke eksisterer, opprettes den og rommet legges til
 
         return new_room
-        """
-        This methods registers a new room with the given room areal size 
-        at the given floor. Optionally the room may be assigned a mnemonic name.
-        """
+        
 
 
     def get_floors(self):
-        return sorted(self.floors, key=lambda f: f.level)   #Returnerer alle rom sortert i stigende rekkefølge
         """
         This method returns the list of registered floors in the house.
         The list is ordered by the floor levels, e.g. if the house has 
         registered a basement (level=0), a ground floor (level=1) and a first floor 
         (leve=1), then the resulting list contains these three flors in the above order.
         """
+        return sorted(self.floors, key=lambda f: f.level)   #Returnerer alle rom sortert i stigende rekkefølge
+       
 
 
     def get_rooms(self):
-        rooms = []                                          #Lager en liste for å putte alle rom i huset i
-        for floor in self.floors:                           #Itererer over alle etasjer 
-            rooms.extend(floor.rooms)                       #Legger rommene til i listen
-        return rooms                                        #Returnerer listen med rom
         """
         This methods returns the list of all registered rooms in the house.
         The resulting list has no particular order.
         """
+        rooms = []                                          #Lager en liste for å putte alle rom i huset i
+        for floor in self.floors:                           #Itererer over alle etasjer 
+            rooms.extend(floor.rooms)                       #Legger rommene til i listen
+        return rooms                                        #Returnerer listen med rom
+        
 
 
     def get_area(self):
-        return sum(floor.get_area() for floor in self.floors) #Summerer arealet til alle etasjer
         """
         This methods return the total area size of the house, i.e. the sum of the area sizes of each room in the house.
         """
+        return sum(floor.get_area() for floor in self.floors) #Summerer arealet til alle etasjer
+       
 
 
     def register_device(self, room, device):
-        for floor in self.floors:                           #Itererer over alle etasjer
-            if room in floor.rooms:                         #Sjekker om rommet eksisterer i huset
-                room.add_device(device)                      #Legger til enheten i rommet
-                device.room = room                           #Registrerer rommet i enhetens attributt
-                return device
+        
         """
         This methods registers a given device in a given room.
         """
 
+        for r in self.get_rooms():             #Går gjennom alle rom i huset
+            if device in r.devices:             #Sjekker om device allerede finnes i et rom
+                r.devices.remove(device)         #Fjerner device fra rommet
+                device.room = None                  #Fjerner rommet fra device-objektet
+
+        for floor in self.floors:                           #Itererer over alle etasjer
+            if room in floor.rooms:                         #Sjekker om rommet eksisterer i huset
+                room.add_device(device)                      #Legger til enheten i rommet
+                device.room = room                          #Registrerer rommet i enhetens attributt
+        
+
     
-    def get_device_by_id(self, device_id):
+    def get_device(self, device_id):
+        """
+        This method retrieves a device object via its id.
+        """
         for floor in self.floors:                           #Itererer over alle etasjer
             for room in floor.rooms:                        #Itererer over alle rom i etasjen
                 for device in room.devices:                 #Itererer over alle enheter i rommet
                     if device.id == device_id:              #Sjekker om enhetens id matcher den gitte id-en
                         return device                       #Returnerer enheten hvis den finnes
         return None                                        #Returnerer None hvis enheten ikke finnes i huset
-        """
-        This method retrieves a device object via its id.
-        """
+        
     
     def get_devices(self):
+        """
+        This method returns a list of all registered devices in the house.
+        The resulting list has no particular order.
+        """
         devices = []                                      #Lager en liste for å putte alle enheter i huset i
         for floor in self.floors:                           #Itererer over alle etasjer
             for room in floor.rooms:                        #Itererer over alle rom i etasjen
                 devices.extend(room.devices)               #Legger enhetene til i listen
         return devices                                     #Returnerer listen med enheter
-        """
-        This method returns a list of all registered devices in the house.
-        The resulting list has no particular order.
-        """
+        
