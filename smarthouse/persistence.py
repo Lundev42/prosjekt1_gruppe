@@ -66,12 +66,19 @@ class SmartHouseRepository:
 
 
     def get_latest_reading(self, sensor) -> Optional[Measurement]:
+
+        cur = self.cursor()                                         #Henter connection til databasen
+        cur.execute(""" SELECT * FROM Measurements WHERE device = ? ORDER BY ts DESC LIMIT 1; """, (sensor.id,))   #SQL-spørring for å hente siste måling for en sensor
+        row = cur.fetchone()                                           #Henter data fra connection  
+        cur.close()                                                     #Lukker connection til databasen
+        if row is None:
+            return None
         """
         Retrieves the most recent sensor reading for the given sensor if available.
         Returns None if the given object has no sensor readings.
         """
-        # TODO: After loading the smarthouse, continue here
-        return NotImplemented
+        
+        return Measurement(row[1], row[0], row[2], row[3])     
 
 
     def update_actuator_state(self, actuator):
