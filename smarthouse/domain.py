@@ -7,8 +7,9 @@ class Measurement:
     En måling kan for eksempel være en temperaturmåling som ble tatt 2024-06-01 kl. 12:00, med verdien 21.5 og enheten "°C".
     """
 
-    def __init__(self, timestamp, value, unit):                 # Konstruktøren (tar inn tidspunkt og dato for målingen, verdien og enheten)
-        self.timestamp = timestamp                              # Tidspunkt og dato (f.eks. "2024-06-01 12:00")
+    def __init__(self, timestamp, device, value, unit):                 # Konstruktøren (tar inn tidspunkt og dato for målingen, verdien og enheten)
+        self.timestamp = timestamp   
+        self.device = device                           # Tidspunkt og dato (f.eks. "2024-06-01 12:00")
         self.value = value                                      # Måleverdien (f.eks. 21.5)
         self.unit = unit                                        # Enheten for måleverdien (f.eks. "°C")
 
@@ -157,10 +158,11 @@ class SmartHouse:
 
     
 
-    def register_room(self, floor, room_size, room_name = None):
+    def register_room(self, floor_level, room_size, room_name = None):
         """
         This methods registers a new room with the given room areal size 
         at the given floor. Optionally the room may be assigned a mnemonic name.
+        """
         """
         new_room = Room(room_size, room_name)               #Lager et nytt rom med gitte navn og areal
 
@@ -170,7 +172,16 @@ class SmartHouse:
             self.register_floor(floor).add_room(new_room)   #Hvis etasjen ikke eksisterer, opprettes den og rommet legges til
 
         return new_room
-        
+        """
+        floor = None
+        for f in self.floors: 
+            if f.level == floor_level:
+                floor = f
+        if floor is None:
+            floor = self.register_floor(floor_level)
+        new_room = Room(room_size, room_name)
+        floor.add_room(new_room)
+        return new_room
 
 
     def get_floors(self):
@@ -232,7 +243,8 @@ class SmartHouse:
                     if device.id == device_id:              #Sjekker om enhetens id matcher den gitte id-en
                         return device                       #Returnerer enheten hvis den finnes
         return None                                        #Returnerer None hvis enheten ikke finnes i huset
-        
+    def get_device_by_id(self, device_id):
+        return self.get_device(device_id)                      #Kaller get_device for å hente enheten med gitt id, denne metoden er bare en alias for get_device
     
     def get_devices(self):
         """

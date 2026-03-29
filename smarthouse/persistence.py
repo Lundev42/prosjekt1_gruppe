@@ -42,27 +42,44 @@ class SmartHouseRepository:
         cur = self.cursor()                                         #Henter connection til databasen
         cur.execute("""                     
             SELECT *
-            FROM devices d INNER JOIN rooms r ON d.room=r.id;
+            FROM rooms;
         """)                                                      # execute SQL-spørring som slår sammen rom og devices fra databasen på rom-ID (inner join)
-
-        rooms_data = cur.fetchall()                                # Henter data fra connection
-        h=SmartHouse()                                              # Oppretter et smarthouse for å fylle inn data
+        rooms_data = cur.fetchall()   
+         
+        
+    
+                                 # Henter data fra connection
+        h=SmartHouse()
+        room_cache = {}   
+                                               # Oppretter et smarthouse for å fylle inn data
 
         
         for row in rooms_data:
-            new_room = h.register_room(row[7],row[8],row[9])        #oppretter et nytt rom som oppretter etasjer automatisk            
-            new_device = None                                          #Tom variabel for ny device
+            room_id, floor, area, name = row[0], row[1], row[2], row[3]     
+            new_room = h.register_room(floor,area,name)  
+            room_cache[room_id] = new_room
 
-            if row[3] == 'actuator':                                #sjekker type device, vet at det bare er actuator eller sensor
-                new_device = Actuator(row[0], row[2], row[4], row[5])   #Opprette actuator med data fra databasen
+        cur.execute("""SELECT * FROM devices;""")
+        devices_data = cur.fetchall()
+
+
+        for row in devices_data:
+            room_db_id = row[1] 
+            new_room = room_cache.get(room_db_id)
+                                         
+                                              
+
+            if row[3] == 'actuator':                               
+                new_device = Actuator(row[0], row[2], row[4], row[5])   
             else:
-                new_device = Sensor(row[0], row[2], row[4], row[5])     #Opprette sensor med data fra databasen
-
-            h.register_device(new_room, new_device)                     #Registrerer device på rommet 
-
-        cur.close()                                                     #Lukker connection til databasen
-
-        return h                                                        #returnerer smarthouse, h
+                new_device = Sensor(row[0], row[2], row[4], row[5]) 
+                    
+            if new_room:
+                h.register_device(new_room, new_device) 
+            
+        cur.close()                                                    
+       
+        return h                                                        
 
 
     def get_latest_reading(self, sensor) -> Optional[Measurement]:
