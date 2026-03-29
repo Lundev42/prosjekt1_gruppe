@@ -1,4 +1,5 @@
-
+from datetime import datetime
+import random
 
 class Measurement:
     """
@@ -85,7 +86,12 @@ class Sensor(Device):
     def last_measurement(self):                                 # Metode for å hente siste måling fra sensoren
         if self.measurements:                                   # Sjekker om det finnes noen målinger i listen
             return self.measurements[-1]                        # Returnerer siste måling fra listen
-        return None                                             # Returnerer None hvis det ikke finnes noen målinger
+        else:
+            return Measurement(datetime.now(), value=random.uniform(15,30), unit="°C") 
+            # Dersom det ikke eksisterer en måling genereres det en ny måling.
+            # Dette scriptet genererer kun temperatur, slik at det er det som vil dukke opp
+            # for andre typer sensorer også. Dette bør kanskje endres/utbedres?
+                                                 
 
 
 

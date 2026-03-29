@@ -62,7 +62,3 @@ DEMO_HOUSE.register_device(guestRoom2, lightbulp)
 DEMO_HOUSE.register_device(guestRoom3, air_quality_sensor)
 DEMO_HOUSE.register_device(masterBedroom, temperature_sensor)
 DEMO_HOUSE.register_device(masterBedroom, smart_oven)
-
-# ADDING MEASUREMENT TO TEMPERATURE SENSOR
-measurement = Measurement(date.today(), value=22.5, unit="°C")
-temperature_sensor.add_measurement(measurement)

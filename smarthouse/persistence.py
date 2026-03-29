@@ -38,10 +38,6 @@ class SmartHouseRepository:
         all referenced objects within the object structure (e.g. floors, rooms, devices) 
         are retrieved as well. 
         """
-        # TODO: START here! remove the following stub implementation and implement this function 
-        #       by retrieving the data from the database via SQL `SELECT` statements.
-        
-        
 
         cur = self.cursor()                                         #Henter connection til databasen
         cur.execute("""                     
