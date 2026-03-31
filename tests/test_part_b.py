@@ -85,7 +85,7 @@ class SmartHouseTest(unittest.TestCase):
         self.assertFalse(plug.is_active())
         
         
-    def test_zadvanced_test_humidity_hours(self):
+    def test_advanced_test_humidity_hours(self):
         bath = None 
         h = self.repo.load_smarthouse_deep()
         for r in h.get_rooms():
