@@ -98,7 +98,7 @@ class SmartHouseTest(unittest.TestCase):
         self.assertSetEqual(set(expected), set(result))
 
 
-    def test_zadvanced_test_temp_avgs(self):
+    def test_advanced_test_temp_avgs(self):
         living_room = None
         garage = None
         bedroom = None
