@@ -102,11 +102,44 @@ class SmartHouseRepository:
         """
         Saves the state of the given actuator in the database. 
         """
-        # TODO: Implement this method. You will probably need to extend the existing database structure: e.g.
-        #       by creating a new table (`CREATE`), adding some data to it (`INSERT`) first, and then issue
-        #       and SQL `UPDATE` statement. Remember also that you will have to call `commit()` on the `Connection`
-        #       stored in the `self.conn` instance variable.
-        pass
+        cur = self.cursor()                 # Oppretter en connection med databasen
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS actuators (
+            id TEXT PRIMARY KEY,
+            kind TEXT NOT NULL,
+            supplier TEXT,
+            product TEXT,
+            state INTEGER NOT NULL DEFAULT 0
+        );
+        """)                                # Oppretter en ny tabell som heter actuators med kolonnene: id, 
+                                            # kind, supplier, product og state. 
+                                            # "IF NOT EXISTS" gjør at den opprettes kun èn gang
+
+        cur.execute("""
+            INSERT OR IGNORE INTO actuators (id, kind, supplier, product)
+            SELECT id, kind, supplier, product
+            FROM devices
+            WHERE category = 'actuator';
+        """)                                # Markerer alle aktuatorer i device-tabellen og legger til informasjonen
+                                            # i den nye tabellen "actuators". 
+
+                                            # "OR IGNORE" håndterer tilfeller hvor aktuatoren allerede eksisterer i 
+                                            # tabellen, slik at man unngår duplikasjoner
+        
+        if actuator.is_active():            # Dersom aktuatoren man jobber med/kaller på er aktiv, endres state til 1
+            cur.execute("""
+                UPDATE actuators
+                SET state = 1
+                WHERE id = ?;
+        """, (actuator.id,))
+        else:                               # Dersom aktuatoren man jobber med/kaller på ikke er aktiv, endres state til 0
+            cur.execute("""
+                UPDATE actuators
+                SET state = 0
+                WHERE id = ?;
+        """, (actuator.id,))
+
+        self.conn.commit()
 
 
     # statistics
