@@ -45,7 +45,11 @@ class Room:
 
     def add_device(self, device):                               # Metode for å legge til en enhet i rommet
         if device not in self.devices:
-            self.devices.append(device)                             # Legger til enheten i listen i konstruktøren
+            self.devices.append(device)                         # Legger til enheten i listen i konstruktøren
+
+    def remove_device(self, device):                            # Metode for å fjerne en enhet fra rommet
+        if device in self.devices:                              # Sjekker om enheten finnes i listen før den fjernes
+            self.devices.remove(device)                         # Fjerner enheten fra listen
 
 
 
@@ -88,10 +92,15 @@ class Sensor(Device):
         if self.measurements:                                   # Sjekker om det finnes noen målinger i listen
             return self.measurements[-1]                        # Returnerer siste måling fra listen
         else:
-            return Measurement(datetime.now(), value=random.uniform(15,30), unit="°C") 
-            # Dersom det ikke eksisterer en måling genereres det en ny måling.
-            # Dette scriptet genererer kun temperatur, slik at det er det som vil dukke opp
-            # for andre typer sensorer også. Dette bør kanskje endres/utbedres?
+            measurement = Measurement(                          # Hvis det ikke finnes noen målinger, oppretter en ny måling med nåværende tidspunkt, en tilfeldig verdi mellom 15 og 30, og enheten "°C"
+                datetime.now(),                                 # Nåværende tidspunkt
+                self,
+                random.uniform(15, 30),                        # Tilfeldig verdi mellom 15 og 30
+                "°C",                                          # Enhet
+            )
+            self.add_measurement(measurement)                  # Legger til den nye målingen i listen
+            return measurement
+
                                                  
 
 
@@ -173,14 +182,20 @@ class SmartHouse:
 
         return new_room
         """
-        floor = None
-        for f in self.floors: 
-            if f.level == floor_level:
-                floor = f
-        if floor is None:
-            floor = self.register_floor(floor_level)
-        new_room = Room(room_size, room_name)
-        floor.add_room(new_room)
+        if isinstance(floor_level, Floor):                  # Sjekker om floor_level er en instans av Floor-klassen, hvis ja, bruker den som etasje for rommet
+            floor = floor_level                             # Hvis floor_level ikke er en instans av Floor-klassen, antar vi at det er et heltall som representerer etasjenivået, og vi sjekker om det allerede finnes en etasje med dette nivået i huset
+            if floor not in self.floors:                    # Hvis etasjen ikke finnes, registrerer vi den og legger den til i listen over etasjer
+                self.floors.append(floor)                   # Legger til den nye etasjen i listen over etasjer
+        else:                                               # Hvis floor_level ikke er en instans av Floor-klassen, antar vi at det er et heltall som representerer etasjenivået, og vi sjekker om det allerede finnes en etasje med dette nivået i huset           
+            floor = None                                    # Variabel for å holde den eksisterende etasjen hvis den finnes
+            for f in self.floors:                           # Itererer over alle etasjer i huset for å finne en etasje med det gitte nivået
+                if f.level == floor_level:                  # Hvis en etasje med det gitte nivået finnes, lagrer vi den i variabelen floor og bryter ut av løkken
+                    floor = f                               # Lagrer den eksisterende etasjen i variabelen floor
+                    break                                   # Bryter ut av løkken hvis etasjen er funnet
+            if floor is None:                               # Hvis ingen etasje med det gitte nivået finnes, oppretter vi en ny etasje med det gitte nivået og legger den til i listen over etasjer
+                floor = self.register_floor(floor_level)    # Oppretter en ny etasje med det gitte nivået og legger den til i listen over etasjer
+        new_room = Room(room_size, room_name)               # Lager et nytt rom med gitte navn og areal    
+        floor.add_room(new_room)                            # Legger det nye rommet til i etasjen
         return new_room
 
 
@@ -221,15 +236,20 @@ class SmartHouse:
         This methods registers a given device in a given room.
         """
 
-        for r in self.get_rooms():             #Går gjennom alle rom i huset
-            if device in r.devices:             #Sjekker om device allerede finnes i et rom
-                r.devices.remove(device)         #Fjerner device fra rommet
-                device.room = None                  #Fjerner rommet fra device-objektet
+        if device.room is not None:                 # Sjekker om enheten allerede er registrert i et rom, hvis ja, fjernes den fra det rommet før den legges til i det nye rommet
+            device.room.remove_device(device)       # Fjerner enheten fra det rommet den er registrert i
+            device.room = None                      # Nullstiller enhetens room-attributt før den legges til i det nye rommet
+        else:                                       # Hvis enheten ikke er registrert i et rom, sjekker vi om den finnes i noen av rommene i huset, og hvis den gjør det, fjerner vi den fra det rommet før den legges til i det nye rommet
+            for r in self.get_rooms():              #Går gjennom alle rom i huset
+                if device in r.devices:             #Sjekker om device allerede finnes i et rom
+                    r.remove_device(device)         #Fjerner device fra rommet
+                    break                           #Bryter ut av løkken etter at enheten er fjernet fra det rommet den var registrert i    
 
         for floor in self.floors:                           #Itererer over alle etasjer
             if room in floor.rooms:                         #Sjekker om rommet eksisterer i huset
                 room.add_device(device)                      #Legger til enheten i rommet
                 device.room = room                          #Registrerer rommet i enhetens attributt
+                return
         
 
     
