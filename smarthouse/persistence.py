@@ -194,8 +194,6 @@ class SmartHouseRepository:
         The result is a (possibly empty) list of number representing hours [0-23].
         """
 
-       
-
         cur = self.cursor()
         cur.execute("""
                     SELECT AVG(m.value)
